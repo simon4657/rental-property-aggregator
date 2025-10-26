@@ -135,6 +135,75 @@ export const appRouter = router({
       .query(async ({ input }) => {
         return await db.getDistrictsByCity(input.city);
       }),
+
+    // 從瀏覽器擴充功能建立物件（不需認證）
+    createFromExtension: publicProcedure
+      .input(
+        z.object({
+          url: z.string(),
+          address: z.string(),
+          city: z.string().optional(),
+          district: z.string().optional(),
+          floor: z.string().optional(),
+          price: z.string().optional(),
+          rooms: z.string().optional(),
+          age: z.string().optional(),
+          hasElevator: z.boolean().optional(),
+          nearMRT: z.string().optional(),
+          source: z.string(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        // 檢查 URL 是否已存在
+        const existing = await db.getPropertyByUrl(input.url);
+        if (existing) {
+          return {
+            success: false,
+            message: '此物件已存在於系統中',
+            propertyId: existing.id,
+          };
+        }
+
+        // 轉換價格為數字
+        let priceNum = 0;
+        if (input.price) {
+          const parsed = parseInt(input.price.replace(/[^\d]/g, ''), 10);
+          if (!isNaN(parsed)) {
+            priceNum = parsed;
+          }
+        }
+
+        // 轉換屋齡為數字
+        let ageNum = undefined;
+        if (input.age) {
+          const parsed = parseInt(input.age, 10);
+          if (!isNaN(parsed)) {
+            ageNum = parsed;
+          }
+        }
+
+        // 建立新物件
+        await db.createProperty({
+          propertyUrl: input.url,
+          address: input.address,
+          city: input.city || '',
+          district: input.district || '',
+          floor: input.floor || '',
+          price: priceNum,
+          rooms: input.rooms || '',
+          age: ageNum,
+          hasElevator: input.hasElevator || false,
+          nearMrt: input.nearMRT || '',
+          source: input.source,
+          notes: '由瀏覽器擴充功能自動匯入',
+          createdBy: 1, // 系統預設使用者
+        });
+
+        return {
+          success: true,
+          message: '物件已成功加入系統',
+        };
+      }),
   }),
 });
 

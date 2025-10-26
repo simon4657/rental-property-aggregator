@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "租屋物件快速收集工具",
+  "version": "1.0.0",
+  "description": "在瀏覽租屋網站時，一鍵擷取物件資訊並加入到租賃物件聚合平台",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://rent.591.com.tw/*",
+    "https://www.sinyi.com.tw/*",
+    "https://www.yungching.com.tw/*",
+    "https://*/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://rent.591.com.tw/*",
+        "https://www.sinyi.com.tw/*",
+        "https://www.yungching.com.tw/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
+

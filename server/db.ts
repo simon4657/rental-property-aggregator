@@ -156,6 +156,14 @@ export async function getPropertyById(id: number) {
   return result.length > 0 ? result[0] : null;
 }
 
+export async function getPropertyByUrl(url: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const result = await db.select().from(properties).where(eq(properties.propertyUrl, url)).limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
 export async function updateProperty(id: number, updates: Partial<InsertProperty>) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
