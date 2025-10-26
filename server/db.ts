@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
+import { and, between, eq, like, or, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertProperty, InsertUser, properties, users } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -89,4 +89,109 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+// Property queries
+
+export async function createProperty(property: InsertProperty) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const result = await db.insert(properties).values(property);
+  return result;
+}
+
+export async function getProperties(filters?: {
+  city?: string;
+  district?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  search?: string;
+}) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const conditions = [];
+
+  if (filters?.city) {
+    conditions.push(eq(properties.city, filters.city));
+  }
+
+  if (filters?.district) {
+    conditions.push(eq(properties.district, filters.district));
+  }
+
+  if (filters?.minPrice !== undefined && filters?.maxPrice !== undefined) {
+    conditions.push(between(properties.price, filters.minPrice, filters.maxPrice));
+  } else if (filters?.minPrice !== undefined) {
+    conditions.push(sql`${properties.price} >= ${filters.minPrice}`);
+  } else if (filters?.maxPrice !== undefined) {
+    conditions.push(sql`${properties.price} <= ${filters.maxPrice}`);
+  }
+
+  if (filters?.search) {
+    conditions.push(
+      or(
+        like(properties.address, `%${filters.search}%`),
+        like(properties.district, `%${filters.search}%`),
+        like(properties.nearMrt, `%${filters.search}%`)
+      )
+    );
+  }
+
+  const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+
+  const result = await db
+    .select()
+    .from(properties)
+    .where(whereClause)
+    .orderBy(sql`${properties.createdAt} DESC`);
+
+  return result;
+}
+
+export async function getPropertyById(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const result = await db.select().from(properties).where(eq(properties.id, id)).limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function updateProperty(id: number, updates: Partial<InsertProperty>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db.update(properties).set(updates).where(eq(properties.id, id));
+}
+
+export async function deleteProperty(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db.delete(properties).where(eq(properties.id, id));
+}
+
+export async function getCities() {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const result = await db
+    .selectDistinct({ city: properties.city })
+    .from(properties)
+    .orderBy(properties.city);
+
+  return result.map(r => r.city);
+}
+
+export async function getDistrictsByCity(city: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const result = await db
+    .selectDistinct({ district: properties.district })
+    .from(properties)
+    .where(eq(properties.city, city))
+    .orderBy(properties.district);
+
+  return result.map(r => r.district);
+}
+

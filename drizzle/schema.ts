@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, boolean } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -25,4 +25,41 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-// TODO: Add your tables here
+/**
+ * Properties table for storing rental property information
+ */
+export const properties = mysqlTable("properties", {
+  id: int("id").autoincrement().primaryKey(),
+  /** Original property URL from the source website */
+  propertyUrl: varchar("propertyUrl", { length: 512 }).notNull(),
+  /** Full address of the property */
+  address: text("address").notNull(),
+  /** City/County (縣市) */
+  city: varchar("city", { length: 64 }).notNull(),
+  /** District (行政區) */
+  district: varchar("district", { length: 64 }).notNull(),
+  /** Floor information (e.g., "3/5" or "整棟") */
+  floor: varchar("floor", { length: 64 }),
+  /** Monthly rent price in TWD */
+  price: int("price").notNull(),
+  /** Room configuration (e.g., "3房2廳1衛") */
+  rooms: varchar("rooms", { length: 64 }),
+  /** Building age in years */
+  age: int("age"),
+  /** Whether the building has an elevator */
+  hasElevator: boolean("hasElevator").default(false),
+  /** Nearby MRT station or line information */
+  nearMrt: varchar("nearMrt", { length: 256 }),
+  /** Source website (e.g., "591", "信義房屋", "永慶房仲") */
+  source: varchar("source", { length: 64 }),
+  /** Additional notes */
+  notes: text("notes"),
+  /** User who created this entry */
+  createdBy: int("createdBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Property = typeof properties.$inferSelect;
+export type InsertProperty = typeof properties.$inferInsert;
+
