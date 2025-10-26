@@ -4,6 +4,7 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import * as db from "./db";
+import * as scraper from "./scraper";
 
 export const appRouter = router({
   system: systemRouter,
@@ -17,6 +18,35 @@ export const appRouter = router({
         success: true,
       } as const;
     }),
+  }),
+
+  scraper: router({
+    runScraper: protectedProcedure
+      .input(
+        z.object({
+          sources: z.array(z.enum(["591", "sinyi", "yungching"])).optional(),
+          region: z.string().optional(),
+        })
+      )
+      .mutation(async ({ input, ctx }) => {
+        const result = await scraper.scrapeAll({
+          sources: input.sources,
+          region: input.region,
+          userId: ctx.user.id,
+        });
+        return result;
+      }),
+
+    importCSV: protectedProcedure
+      .input(
+        z.object({
+          csvData: z.string(),
+        })
+      )
+      .mutation(async ({ input, ctx }) => {
+        const result = await scraper.importFromCSV(input.csvData, ctx.user.id);
+        return result;
+      }),
   }),
 
   properties: router({

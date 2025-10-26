@@ -55,9 +55,14 @@ export default function Home() {
                 <p className="text-sm text-slate-600">整合多個租賃網站，快速找到理想物件</p>
               </div>
             </div>
-            <Link href="/admin">
-              <Button variant="outline">管理後台</Button>
-            </Link>
+            <div className="flex gap-2">
+              <Link href="/scraper">
+                <Button variant="outline">資料抓取</Button>
+              </Link>
+              <Link href="/admin">
+                <Button variant="outline">管理後台</Button>
+              </Link>
+            </div>
           </div>
         </div>
       </header>

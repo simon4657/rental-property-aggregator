@@ -148,6 +148,9 @@ export default function Admin() {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-sm text-slate-600">歡迎，{user.name}</span>
+              <Link href="/scraper">
+                <Button variant="outline">資料抓取</Button>
+              </Link>
               <Link href="/">
                 <Button variant="outline">返回首頁</Button>
               </Link>
