@@ -294,3 +294,47 @@ MIT License
 
 如有問題或建議，請開啟 Issue。
 
+
+## 🌐 瀏覽器擴充功能
+
+### 功能特色
+
+本專案提供 Chrome 瀏覽器擴充功能，讓您在瀏覽租屋網站時可以一鍵擷取物件資訊：
+
+- 🚀 **一鍵擷取** - 在租屋網站頁面直接擷取物件資訊
+- 🌐 **多站支援** - 支援 591 租屋網、信義房屋、永慶房仲
+- 📱 **精美介面** - 漸層紫色設計，操作直覺簡單
+- 🔄 **即時同步** - 擷取的資料即時加入系統
+- 🛡️ **防重複** - 自動檢測避免重複匯入
+
+### 安裝步驟
+
+1. 開啟 Chrome 瀏覽器
+2. 在網址列輸入 `chrome://extensions/`
+3. 開啟右上角的「開發人員模式」
+4. 點擊「載入未封裝項目」
+5. 選擇 `browser-extension` 資料夾
+6. 安裝完成！
+
+### 使用方式
+
+1. 點擊擴充功能圖示 🏠
+2. 設定 API 網址（您的平台網址）
+3. 前往支援的租屋網站
+4. 開啟物件詳細頁面
+5. 點擊「擷取資料」按鈕
+
+詳細說明請參考：
+- [瀏覽器擴充功能完整文件](browser-extension/README.md)
+- [安裝指南](browser-extension/INSTALLATION.md)
+
+### 下載
+
+- 原始碼：`browser-extension/` 資料夾
+- 打包檔案：`browser-extension.zip`
+
+---
+
+⭐ 如果這個專案對您有幫助，請給我們一個 Star！
+
+📦 專案連結：[https://github.com/simon4657/rental-property-aggregator](https://github.com/simon4657/rental-property-aggregator)
