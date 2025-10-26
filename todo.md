@@ -45,9 +45,9 @@
 
 ## GitHub 部署
 
-- [ ] 建立 GitHub 儲存庫
-- [ ] 初始化 Git
-- [ ] 推送程式碼到 GitHub
-- [ ] 設定 .gitignore
-- [ ] 建立完整的 README.md
+- [x] 建立 GitHub 儲存庫
+- [x] 初始化 Git
+- [x] 推送程式碼到 GitHub
+- [x] 設定 .gitignore
+- [x] 更新 README.md 新增擴充功能說明
 
