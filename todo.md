@@ -41,3 +41,13 @@
 - [x] 建立後端 API 端點（createFromExtension）
 - [x] 生成擴充功能圖示
 
+
+
+## GitHub 部署
+
+- [ ] 建立 GitHub 儲存庫
+- [ ] 初始化 Git
+- [ ] 推送程式碼到 GitHub
+- [ ] 設定 .gitignore
+- [ ] 建立完整的 README.md
+
