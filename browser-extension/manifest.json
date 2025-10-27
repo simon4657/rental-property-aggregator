@@ -5,7 +5,8 @@
   "description": "在瀏覽租屋網站時，一鍵擷取物件資訊並加入到租賃物件聚合平台",
   "permissions": [
     "activeTab",
-    "storage"
+    "storage",
+    "scripting"
   ],
   "host_permissions": [
     "https://rent.591.com.tw/*",

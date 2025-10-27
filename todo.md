@@ -99,3 +99,11 @@
 - [x] 重新打包擴充功能
 - [x] 推送修正到 GitHub
 
+
+
+## 修正 executeScript 錯誤
+
+- [ ] 修正 Chrome API executeScript 調用錯誤
+- [ ] 檢查 manifest.json 權限設定
+- [ ] 重新打包並測試
+
