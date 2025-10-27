@@ -103,7 +103,7 @@
 
 ## 修正 executeScript 錯誤
 
-- [ ] 修正 Chrome API executeScript 調用錯誤
-- [ ] 檢查 manifest.json 權限設定
-- [ ] 重新打包並測試
+- [x] 修正 Chrome API executeScript 調用錯誤
+- [x] 新增 scripting 權限到 manifest.json
+- [x] 重新打包並推送到 GitHub
 
