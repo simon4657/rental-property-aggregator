@@ -1,258 +1,257 @@
-# Render 部署指南
+# Render.com 部署指南
 
-本指南將協助您將租賃物件資訊聚合平台部署到 Render。
+本指南將協助您將租賃物件資訊聚合平台部署到 Render.com。
 
-## 📋 前置準備
+## 前置準備
 
 ### 1. 註冊 Render 帳號
 
-前往 [Render](https://render.com/) 註冊帳號（可使用 GitHub 帳號登入）。
+前往 [Render.com](https://render.com/) 註冊免費帳號。
 
 ### 2. 準備資料庫
 
-Render 提供免費的 PostgreSQL 資料庫，但本專案使用 MySQL。您有以下選擇：
+**選項 A：使用 PlanetScale（推薦）**
 
-**選項 A：使用外部 MySQL 資料庫（推薦）**
-- [PlanetScale](https://planetscale.com/) - 免費 MySQL 資料庫
-- [Railway](https://railway.app/) - 提供 MySQL 服務
-- [Aiven](https://aiven.io/) - 提供 MySQL 服務
+1. 前往 [PlanetScale](https://planetscale.com/) 註冊免費帳號
+2. 建立新資料庫
+3. 取得連接字串（格式：`mysql://user:password@host/database?ssl={"rejectUnauthorized":true}`）
 
-**選項 B：修改為使用 PostgreSQL**
-- 使用 Render 提供的免費 PostgreSQL
-- 需要修改 Drizzle 配置
+**選項 B：使用 Render PostgreSQL**
 
-本指南以使用 PlanetScale 為例。
+1. 在 Render Dashboard 點擊「New +」
+2. 選擇「PostgreSQL」
+3. 建立免費資料庫
+4. 取得 Internal Database URL
 
-## 🚀 部署步驟
+**注意：** 本專案使用 MySQL，如果使用 PostgreSQL 需要修改 Drizzle 配置。
 
-### 步驟 1：建立 PlanetScale 資料庫
+---
 
-1. 前往 [PlanetScale](https://planetscale.com/) 註冊帳號
-2. 點擊「Create a new database」
-3. 輸入資料庫名稱（例如：`rental-aggregator`）
-4. 選擇區域（建議選擇 `AWS ap-northeast-1 (Tokyo)` 較接近台灣）
-5. 點擊「Create database」
+## 部署步驟
 
-### 步驟 2：取得資料庫連接字串
+### 方法 1：使用 render.yaml 自動部署（推薦）
 
-1. 在 PlanetScale 控制台，點擊您的資料庫
-2. 點擊「Connect」
-3. 選擇「Create password」
-4. 複製「Connection string」（格式類似：`mysql://user:password@host/database?ssl={"rejectUnauthorized":true}`）
-5. **重要**：請妥善保存此連接字串，之後無法再次查看
+1. **連接 GitHub 儲存庫**
+   - 登入 Render Dashboard
+   - 點擊「New +」→「Blueprint」
+   - 選擇您的 GitHub 儲存庫
+   - Render 會自動讀取 `render.yaml` 配置
 
-### 步驟 3：在 Render 建立 Web Service
+2. **設定環境變數**
+   
+   在部署前，需要設定以下環境變數：
+   
+   - `DATABASE_URL` - 資料庫連接字串（必填）
+   - `JWT_SECRET` - 自動生成或手動設定
+   - 其他變數已在 render.yaml 中預設
 
-1. 登入 [Render Dashboard](https://dashboard.render.com/)
-2. 點擊「New +」→「Web Service」
-3. 選擇「Build and deploy from a Git repository」
-4. 點擊「Connect account」連接您的 GitHub 帳號
-5. 找到並選擇 `rental-property-aggregator` 儲存庫
-6. 點擊「Connect」
+3. **部署**
+   - 點擊「Apply」開始部署
+   - 等待建置完成（約 5-10 分鐘）
 
-### 步驟 4：設定 Web Service
+### 方法 2：手動建立 Web Service
 
-在設定頁面填入以下資訊：
+1. **建立 Web Service**
+   - 登入 Render Dashboard
+   - 點擊「New +」→「Web Service」
+   - 連接您的 GitHub 儲存庫
+   - 選擇 `rental-property-aggregator` 儲存庫
 
-**基本設定：**
-- **Name**: `rental-property-aggregator`（或您喜歡的名稱）
-- **Region**: 選擇 `Singapore (Southeast Asia)` 或其他較近的區域
-- **Branch**: `master`
-- **Root Directory**: 留空
-- **Runtime**: `Node`
-- **Build Command**: 
-  ```bash
-  npm install -g pnpm && pnpm install && pnpm build
-  ```
-- **Start Command**: 
-  ```bash
-  pnpm start
-  ```
+2. **基本設定**
+   - **Name**: `rental-property-aggregator`（或您喜歡的名稱）
+   - **Region**: 選擇 `Singapore (Southeast Asia)` 或其他較近的區域
+   - **Branch**: `master`
+   - **Root Directory**: 留空
+   - **Runtime**: `Node`
+   - **Build Command**: 
+     ```bash
+     npm install -g pnpm && pnpm install && pnpm build
+     ```
+   - **Start Command**: 
+     ```bash
+     pnpm start
+     ```
 
-**進階設定：**
-- **Instance Type**: 選擇 `Free`（免費方案）
+3. **進階設定**
+   - **Instance Type**: 選擇 `Free`（免費方案）
 
-### 步驟 5：設定環境變數
+4. **環境變數設定**
 
-在「Environment」區段，點擊「Add Environment Variable」，新增以下環境變數：
+   點擊「Environment」標籤，新增以下環境變數：
 
-#### 必要環境變數
+   **必填變數：**
+   ```
+   NODE_ENV=production
+   DATABASE_URL=<您的資料庫連接字串>
+   JWT_SECRET=<隨機生成的密鑰，至少 32 字元>
+   ```
 
-| Key | Value | 說明 |
-|-----|-------|------|
-| `DATABASE_URL` | `mysql://...` | 從 PlanetScale 複製的連接字串 |
-| `JWT_SECRET` | `your-random-secret-key` | 隨機生成的密鑰（至少 32 字元） |
-| `NODE_VERSION` | `22.13.0` | Node.js 版本 |
-| `PNPM_VERSION` | `9.0.0` | pnpm 版本 |
+   **選填變數（使用預設值）：**
+   ```
+   OAUTH_SERVER_URL=https://api.manus.im
+   VITE_OAUTH_PORTAL_URL=https://login.manus.im
+   VITE_APP_TITLE=租賃物件資訊聚合平台
+   VITE_APP_LOGO=https://via.placeholder.com/150
+   ```
 
-#### OAuth 相關環境變數（如需使用登入功能）
+   **生成 JWT_SECRET 的方法：**
+   ```bash
+   # 在終端機執行
+   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+   ```
 
-| Key | Value | 說明 |
-|-----|-------|------|
-| `VITE_APP_ID` | `your-app-id` | OAuth 應用 ID |
-| `OAUTH_SERVER_URL` | `https://api.manus.im` | OAuth 伺服器 URL |
-| `VITE_OAUTH_PORTAL_URL` | `https://oauth.manus.im` | OAuth 登入頁面 URL |
-| `OWNER_OPEN_ID` | `your-open-id` | 擁有者 Open ID |
-| `OWNER_NAME` | `Your Name` | 擁有者名稱 |
+5. **建立服務**
+   - 點擊「Create Web Service」
+   - Render 會自動開始建置和部署
 
-#### 應用程式設定
+---
 
-| Key | Value | 說明 |
-|-----|-------|------|
-| `VITE_APP_TITLE` | `租賃物件資訊聚合平台` | 應用程式標題 |
-| `VITE_APP_LOGO` | `https://your-logo-url.com/logo.png` | Logo 網址（選填） |
-
-### 步驟 6：部署
-
-1. 檢查所有設定是否正確
-2. 點擊「Create Web Service」
-3. Render 會自動開始建置和部署
-4. 等待部署完成（通常需要 5-10 分鐘）
-
-### 步驟 7：初始化資料庫
+## 初始化資料庫
 
 部署完成後，需要初始化資料庫結構：
 
-1. 在 Render Dashboard 中，點擊您的 Web Service
+### 方法 1：使用 Render Shell
+
+1. 在 Render Dashboard 中，進入您的 Web Service
 2. 點擊「Shell」標籤
 3. 執行以下指令：
    ```bash
    pnpm db:push
    ```
-4. 等待資料庫初始化完成
 
-### 步驟 8：新增測試資料（選填）
-
-如果需要測試資料：
+### 方法 2：本地執行（需要資料庫連接）
 
 ```bash
-npx tsx scripts/seed-data.ts
+# 設定環境變數
+export DATABASE_URL="<您的資料庫連接字串>"
+
+# 執行資料庫遷移
+pnpm db:push
 ```
 
-### 步驟 9：訪問您的應用程式
+---
 
-1. 部署完成後，Render 會提供一個網址，格式類似：
-   ```
-   https://rental-property-aggregator.onrender.com
-   ```
-2. 點擊該網址即可訪問您的應用程式
+## 驗證部署
 
-## 🔧 進階設定
+1. **檢查服務狀態**
+   - 在 Render Dashboard 中查看服務狀態
+   - 確認顯示為「Live」
 
-### 自訂網域
+2. **訪問網站**
+   - 點擊 Render 提供的網址（格式：`https://your-app.onrender.com`）
+   - 確認網站正常運行
 
-1. 在 Render Dashboard 中，點擊您的 Web Service
-2. 點擊「Settings」標籤
-3. 找到「Custom Domain」區段
-4. 點擊「Add Custom Domain」
-5. 輸入您的網域名稱
-6. 按照指示在您的網域提供商設定 DNS 記錄
+3. **測試功能**
+   - 測試物件列表顯示
+   - 測試篩選功能
+   - 測試管理後台（需要登入）
 
-### 環境變數管理
+---
 
-如需修改環境變數：
+## 常見問題
 
-1. 在 Render Dashboard 中，點擊您的 Web Service
-2. 點擊「Environment」標籤
-3. 修改或新增環境變數
-4. 點擊「Save Changes」
-5. Render 會自動重新部署
+### Q1: 建置失敗，顯示 "pnpm: command not found"
 
-### 自動部署
+**解決方法：** 確認 Build Command 包含 `npm install -g pnpm`：
+```bash
+npm install -g pnpm && pnpm install && pnpm build
+```
 
-Render 預設會在您推送程式碼到 GitHub 時自動部署。如需停用：
+### Q2: 網站顯示 "Application Error"
 
-1. 在「Settings」標籤
-2. 找到「Auto-Deploy」區段
-3. 選擇「No」
+**可能原因：**
+1. 環境變數設定錯誤
+2. 資料庫連接失敗
+3. 未執行資料庫初始化
+
+**解決方法：**
+1. 檢查 Render Logs 查看詳細錯誤訊息
+2. 確認 `DATABASE_URL` 正確
+3. 執行 `pnpm db:push` 初始化資料庫
+
+### Q3: 建置時間過長
+
+**說明：** 首次建置可能需要 5-10 分鐘，這是正常現象。後續部署會使用快取，速度會更快。
+
+### Q4: 免費方案的限制
+
+Render 免費方案限制：
+- 服務閒置 15 分鐘後會自動休眠
+- 首次喚醒可能需要 30-60 秒
+- 每月 750 小時免費運行時間
+- 適合開發和測試使用
+
+---
+
+## 自動部署
+
+Render 會自動監聽 GitHub 儲存庫的變更：
+
+1. 推送程式碼到 `master` 分支
+2. Render 自動觸發建置和部署
+3. 部署完成後自動更新網站
+
+---
+
+## 自訂網域
+
+如果您有自己的網域：
+
+1. 在 Render Dashboard 中進入您的 Web Service
+2. 點擊「Settings」→「Custom Domain」
+3. 新增您的網域
+4. 按照指示設定 DNS 記錄
+
+---
+
+## 監控和日誌
 
 ### 查看日誌
 
-1. 在 Render Dashboard 中，點擊您的 Web Service
+1. 在 Render Dashboard 中進入您的 Web Service
 2. 點擊「Logs」標籤
-3. 即可查看即時日誌
-
-## 📊 監控與維護
-
-### 健康檢查
-
-Render 會自動進行健康檢查。如需自訂：
-
-1. 在「Settings」標籤
-2. 找到「Health Check Path」
-3. 輸入健康檢查路徑（例如：`/api/health`）
+3. 即時查看應用程式日誌
 
 ### 效能監控
 
-1. 在 Render Dashboard 查看「Metrics」標籤
-2. 可以看到 CPU、記憶體使用情況
-3. 免費方案有資源限制，如需更多資源請升級方案
+Render 提供基本的效能監控：
+- CPU 使用率
+- 記憶體使用率
+- 請求數量
 
-## ⚠️ 注意事項
+---
 
-### 免費方案限制
+## 成本估算
 
-- **睡眠機制**：閒置 15 分鐘後會進入睡眠狀態，下次訪問需要 30-60 秒喚醒
-- **每月 750 小時**：免費方案提供 750 小時運行時間
-- **記憶體限制**：512 MB RAM
-- **CPU 限制**：共享 CPU
+**免費方案：**
+- Web Service: 免費（有限制）
+- 資料庫: 使用 PlanetScale 免費方案
 
-### 避免睡眠
+**付費方案：**
+- Starter: $7/月（無休眠限制）
+- Standard: $25/月（更多資源）
 
-如需保持服務持續運行：
+---
 
-1. 升級到付費方案（$7/月起）
-2. 使用外部監控服務定期 ping 您的網站（例如：UptimeRobot）
+## 支援
 
-### 資料庫連接
-
-- 確保資料庫連接字串包含 SSL 設定
-- PlanetScale 預設啟用 SSL，連接字串已包含相關設定
-
-## 🐛 常見問題
-
-### Q: 部署失敗，顯示「Build failed」？
-
-**A:** 檢查以下項目：
-1. 確認 `package.json` 中有正確的 `build` 和 `start` 腳本
-2. 檢查 Node.js 版本是否正確
-3. 查看 Build Logs 了解具體錯誤訊息
-
-### Q: 應用程式無法連接資料庫？
-
-**A:** 檢查：
-1. `DATABASE_URL` 環境變數是否正確設定
-2. 資料庫是否已初始化（執行 `pnpm db:push`）
-3. 資料庫服務是否正常運行
-
-### Q: 網站載入很慢？
-
-**A:** 可能原因：
-1. 免費方案從睡眠中喚醒需要時間
-2. 資料庫查詢效能問題
-3. 考慮升級到付費方案
-
-### Q: 如何更新應用程式？
-
-**A:** 
-1. 推送程式碼到 GitHub
-2. Render 會自動偵測並重新部署
-3. 或在 Render Dashboard 手動觸發部署
-
-## 📚 相關資源
-
+如有問題，請參考：
 - [Render 官方文件](https://render.com/docs)
-- [PlanetScale 文件](https://planetscale.com/docs)
-- [專案 GitHub](https://github.com/simon4657/rental-property-aggregator)
+- [專案 GitHub Issues](https://github.com/simon4657/rental-property-aggregator/issues)
 
-## 🎉 完成！
+---
 
-恭喜！您的租賃物件資訊聚合平台已成功部署到 Render。
+## 部署檢查清單
 
-**下一步：**
-1. 訪問您的網站確認運作正常
-2. 設定瀏覽器擴充功能的 API 網址
-3. 開始使用平台收集租屋資訊
+- [ ] 註冊 Render 帳號
+- [ ] 準備資料庫（PlanetScale 或其他）
+- [ ] 連接 GitHub 儲存庫
+- [ ] 設定環境變數（特別是 DATABASE_URL）
+- [ ] 建立 Web Service
+- [ ] 等待建置完成
+- [ ] 執行 `pnpm db:push` 初始化資料庫
+- [ ] 訪問網站驗證功能
+- [ ] （選填）設定自訂網域
 
-如有任何問題，請參考專案的 GitHub Issues 或 Render 官方文件。
+完成以上步驟後，您的租賃物件資訊聚合平台就成功部署到 Render.com 了！
 

@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: rental-property-aggregator
+    runtime: node
+    plan: free
+    buildCommand: npm install -g pnpm && pnpm install && pnpm build
+    startCommand: pnpm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: OAUTH_SERVER_URL
+        value: https://api.manus.im
+      - key: VITE_OAUTH_PORTAL_URL
+        value: https://login.manus.im
+      - key: VITE_APP_TITLE
+        value: 租賃物件資訊聚合平台
+      - key: VITE_APP_LOGO
+        value: https://via.placeholder.com/150
+
