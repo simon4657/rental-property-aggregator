@@ -70,8 +70,8 @@
 
 ## Render 原生部署配置
 
-- [ ] 建立 render.yaml 配置檔
-- [ ] 更新 RENDER_DEPLOYMENT.md 說明文件
-- [ ] 推送配置到 GitHub
-- [ ] 測試 Render 部署
+- [x] 建立 render.yaml 配置檔
+- [x] 更新 RENDER_DEPLOYMENT.md 說明文件
+- [x] 推送配置到 GitHub
+- [ ] 等待用戶在 Render 上部署
 
