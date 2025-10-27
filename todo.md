@@ -55,7 +55,7 @@
 
 ## 修正 Render 部署問題
 
-- [ ] 生成 pnpm-lock.yaml 檔案
-- [ ] 更新建置指令
-- [ ] 推送修正到 GitHub
+- [x] 生成 pnpm-lock.yaml 檔案
+- [x] 更新建置指令
+- [x] 推送修正到 GitHub
 
