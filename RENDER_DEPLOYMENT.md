@@ -62,7 +62,7 @@ Render 提供免費的 PostgreSQL 資料庫，但本專案使用 MySQL。您有�
 - **Runtime**: `Node`
 - **Build Command**: 
   ```bash
-  pnpm install && pnpm build
+  npm install -g pnpm && pnpm install && pnpm build
   ```
 - **Start Command**: 
   ```bash

@@ -51,3 +51,11 @@
 - [x] 設定 .gitignore
 - [x] 更新 README.md 新增擴充功能說明
 
+
+
+## 修正 Render 部署問題
+
+- [ ] 生成 pnpm-lock.yaml 檔案
+- [ ] 更新建置指令
+- [ ] 推送修正到 GitHub
+
