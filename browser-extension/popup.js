@@ -247,12 +247,15 @@ function extractAllData() {
 
 // 發送資料到後端
 async function sendToBackend(apiUrl, data) {
-  const response = await fetch(`${apiUrl}/api/trpc/properties.createFromExtension`, {
+  // 使用 tRPC 的標準 HTTP 調用格式
+  const url = new URL(`${apiUrl}/api/trpc/properties.createFromExtension`);
+  url.searchParams.set('input', JSON.stringify(data));
+  
+  const response = await fetch(url.toString(), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ json: data })
   });
 
   if (!response.ok) {
@@ -260,7 +263,8 @@ async function sendToBackend(apiUrl, data) {
     throw new Error(`無法連接到伺服器: ${response.status} - ${errorText}`);
   }
 
-  return await response.json();
+  const result = await response.json();
+  return result.result.data;
 }
 
 // 顯示狀態訊息

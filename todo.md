@@ -107,3 +107,11 @@
 - [x] 新增 scripting 權限到 manifest.json
 - [x] 重新打包並推送到 GitHub
 
+
+
+## 修正 API 端點問題
+
+- [ ] 檢查後端 API 路由設定
+- [ ] 修正擴充功能的 API 調用方式
+- [ ] 測試 API 端點是否正常運作
+
