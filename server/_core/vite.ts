@@ -48,9 +48,10 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 export function serveStatic(app: Express) {
-  // In production (Docker), dist is at /app/dist, and client/dist is at /app/client/dist
-  // After esbuild, import.meta.dirname is /app/dist
-  const distPath = path.resolve(import.meta.dirname, "..", "client", "dist");
+  const distPath =
+    process.env.NODE_ENV === "development"
+      ? path.resolve(import.meta.dirname, "../..", "dist", "public")
+      : path.resolve(import.meta.dirname, "public");
   if (!fs.existsSync(distPath)) {
     console.error(
       `Could not find the build directory: ${distPath}, make sure to build the client first`

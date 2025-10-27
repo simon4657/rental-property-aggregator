@@ -66,18 +66,3 @@
 - [x] 修正 Dockerfile 中的 pnpm 安裝指令
 - [x] 推送修正到 GitHub
 
-
-
-## 徹底修正 Docker 部署問題
-
-- [x] 檢查 package.json 和 pnpm workspace 配置
-- [x] 簡化 Dockerfile，使用單階段建置
-- [x] 推送修正到 GitHub
-
-
-
-## 修正前端資源載入錯誤
-
-- [x] 修正生產環境靜態檔案路徑配置
-- [x] 推送修正到 GitHub
-
