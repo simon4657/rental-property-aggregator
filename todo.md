@@ -123,3 +123,17 @@
 - [x] 測試 Render 部署的 API 調用成功
 - [x] 重新打包並推送到 GitHub
 
+
+
+
+## Render 資料庫配置
+
+- [ ] 修改專案從 MySQL 改為 PostgreSQL
+- [ ] 更新 package.json 依賴
+- [ ] 更新 server/db.ts 資料庫連線
+- [ ] 更新 drizzle/schema.ts 使用 PostgreSQL 語法
+- [ ] 在 Render 上建立 PostgreSQL 資料庫
+- [ ] 設定 DATABASE_URL 環境變數
+- [ ] 執行資料庫 schema 初始化
+- [ ] 測試擴充功能是否能成功儲存資料
+

@@ -1,5 +1,6 @@
-import { and, between, eq, like, or, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/mysql2";
+import { and, between, eq, ilike, or, sql } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 import { InsertProperty, InsertUser, properties, users } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -9,7 +10,8 @@ let _db: ReturnType<typeof drizzle> | null = null;
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
-      _db = drizzle(process.env.DATABASE_URL);
+      const client = postgres(process.env.DATABASE_URL);
+      _db = drizzle(client);
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
       _db = null;
@@ -68,7 +70,9 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       updateSet.lastSignedIn = new Date();
     }
 
-    await db.insert(users).values(values).onDuplicateKeyUpdate({
+    // PostgreSQL upsert syntax
+    await db.insert(users).values(values).onConflictDoUpdate({
+      target: users.openId,
       set: updateSet,
     });
   } catch (error) {
@@ -128,11 +132,12 @@ export async function getProperties(filters?: {
   }
 
   if (filters?.search) {
+    // PostgreSQL uses ILIKE for case-insensitive search
     conditions.push(
       or(
-        like(properties.address, `%${filters.search}%`),
-        like(properties.district, `%${filters.search}%`),
-        like(properties.nearMrt, `%${filters.search}%`)
+        ilike(properties.address, `%${filters.search}%`),
+        ilike(properties.district, `%${filters.search}%`),
+        ilike(properties.nearMrt, `%${filters.search}%`)
       )
     );
   }
