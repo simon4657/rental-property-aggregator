@@ -115,3 +115,11 @@
 - [x] 修正擴充功能的 tRPC API 調用格式
 - [x] 重新打包並推送到 GitHub
 
+
+## 修正 tRPC mutation 調用方式
+
+- [ ] 改用 GET 方法調用 tRPC mutation
+- [ ] 正確編碼參數到 URL query string
+- [ ] 測試 Render 部署的 API 是否正常運作
+- [ ] 重新打包並推送到 GitHub
+

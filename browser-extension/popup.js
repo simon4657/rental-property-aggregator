@@ -247,15 +247,17 @@ function extractAllData() {
 
 // 發送資料到後端
 async function sendToBackend(apiUrl, data) {
-  // 使用 tRPC 的標準 HTTP 調用格式
-  const url = new URL(`${apiUrl}/api/trpc/properties.createFromExtension`);
-  url.searchParams.set('input', JSON.stringify(data));
+  // 使用 tRPC 的標準 HTTP POST 格式
+  const url = `${apiUrl}/api/trpc/properties.createFromExtension`;
   
-  const response = await fetch(url.toString(), {
+  const response = await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
+    body: JSON.stringify({
+      json: data
+    })
   });
 
   if (!response.ok) {
@@ -264,7 +266,13 @@ async function sendToBackend(apiUrl, data) {
   }
 
   const result = await response.json();
-  return result.result.data;
+  
+  // 檢查是否有錯誤
+  if (result.error) {
+    throw new Error(result.error.json?.message || '伺服器錯誤');
+  }
+  
+  return result.result?.data;
 }
 
 // 顯示狀態訊息
