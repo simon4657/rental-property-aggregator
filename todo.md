@@ -63,7 +63,6 @@
 
 ## 修正 Dockerfile 錯誤
 
-- [ ] 修正 Dockerfile 中的 pnpm 安裝指令
-- [ ] 測試 Docker 建置
-- [ ] 推送修正到 GitHub
+- [x] 修正 Dockerfile 中的 pnpm 安裝指令
+- [x] 推送修正到 GitHub
 
