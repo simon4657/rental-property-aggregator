@@ -70,8 +70,7 @@
 
 ## 徹底修正 Docker 部署問題
 
-- [ ] 檢查 package.json 和 pnpm workspace 配置
-- [ ] 簡化 Dockerfile，避免複雜的多階段建置
-- [ ] 測試本地 Docker 建置
-- [ ] 推送修正到 GitHub
+- [x] 檢查 package.json 和 pnpm workspace 配置
+- [x] 簡化 Dockerfile，使用單階段建置
+- [x] 推送修正到 GitHub
 
