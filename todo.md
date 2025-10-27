@@ -118,8 +118,8 @@
 
 ## 修正 tRPC mutation 調用方式
 
-- [ ] 改用 GET 方法調用 tRPC mutation
-- [ ] 正確編碼參數到 URL query string
-- [ ] 測試 Render 部署的 API 是否正常運作
-- [ ] 重新打包並推送到 GitHub
+- [x] 找到正確的 tRPC POST body 格式：{json: data}
+- [x] 更新 popup.js 使用正確格式
+- [x] 測試 Render 部署的 API 調用成功
+- [x] 重新打包並推送到 GitHub
 
